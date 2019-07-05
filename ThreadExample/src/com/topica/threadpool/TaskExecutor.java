@@ -14,9 +14,9 @@ public class TaskExecutor implements Runnable {
 			while (true) {
 				String name = Thread.currentThread().getName();
 				Runnable task = queue.dequeue();
-				 System.out.println("Task Started by Thread :" + name+" of task "+((TestTask) task).getNumber());
+				System.out.println("Task " + ((TestTask) task).getNumber() + " started by " + name);
 				task.run();
-				System.out.println("Task finished by Thread :" + name);
+				System.out.println("Task " + ((TestTask) task).getNumber() + " finished by " + name);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

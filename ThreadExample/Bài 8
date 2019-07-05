@@ -1,0 +1,88 @@
+Bài 1.1: Tìm hiểu về Deadlock.
+	- Deadlock xảy ra trong môi trường multi-thread.
+	- Khi có thread (1) đang giữ tài nguyên (A) và cần truy cập tài nguyên(B) để tiếp tục xử lý (call method xử lý…) nhưng tài nguyên (B) đang
+được thread (2) sử dụng, trong lúc này thì thread (2) cũng đang cần truy cập vào tài nguyên (A) mà thread (1) đang sử dụng. Lúc này thì cả 2 
+thread đều không thể tiếp tục thực hiện mà đều phải “chờ” nhau nhưng không biết khi nào thì sẽ kết thúc.
+	- Deadlock xảy ra khi chúng ta lạm dụng từ khóa synchronized. Nó khiến cho các Thread nắm giữ các đối tượng dùng chung
+mãi mãi mà không chịu trả ra cho các đối tượng khác dùng.
+
+Ví dụ:
+package com.topica.deadlock;
+public class ThreadExample {
+	public static Object lock1 = new Object();
+	public static Object lock2 = new Object();
+	
+	public static void main(String args[]) {
+		Thread1 thread1 = new Thread1();
+		Thread2 thread2 = new Thread2();
+		thread1.start();
+		thread2.start();
+	}
+
+	public static class Thread1 extends Thread {
+		public void run() {
+			synchronized (lock1) {
+				System.out.println("Thread 1: holding lock 1...");
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+		
+				}
+				System.out.println("Thread 1: waiting lock 2...");
+				synchronized (lock2) {
+					System.out.println("Thread 1: holding lock 1&2...");
+				}
+			}
+		}
+	}
+
+	public static class Thread2 extends Thread {
+		public void run() {
+			synchronized (lock2) {
+				System.out.println("Thread 2: holding lock 2...");
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					
+				}
+				System.out.println("Thread 2: waiting lock 1...");
+				synchronized (lock1) {
+					System.out.println("Thread 2: holding lock 1&2...");
+				}
+			}
+		}
+	}
+}
+
+Bài 1.2: Phát biểu bài toán Dining Philosopher.
+	- Phát biểu bài toán:
+	 + Các triết gia ngồi ăn trên 1 cái bàn tròn, trước mặt mỗi người là 1 đĩa thức ăn, giữa 2 người có 1 chiếc đũa.
+	 + Mỗi người phải giành thời gian để suy nghĩ hoặc là bị đói.
+	 + Triết gia chỉ có thể ăn khi có đủ 2 chiếc đũa.
+	 + Một triết gia sẽ bị đói khi người đó không được ăn.
+	 + Tất cả triết gia sẽ bị đói khi không nghĩ ra được giải pháp.
+	- Yêu cầu giải quyết bài toán:
+	 + Tìm ra giải pháp mà các triết gia đều được ăn và không chết đói(Đồng bộ tiến các tiến trình sao cho không bị tắc nghẽn).
+	- Giải pháp:
+	 + Phân cấp tài nguyên: xếp thứ tự ưu tiên.
+	 + Trọng tài viên: khi các triết gia yêu cầu ăn trong khi có một triết gia đang ăn thì trọng tài viên sẽ buốc các triết gia phải đợi cho đến khi
+	 triết gia kia ăn xong.
+	 + Cơ chế dọn dẹp: khi một triết gia ăn xong họ buộc phải dọn dẹp sạch cái đũa trước khi đưa cho triết gia khác sử dụng.
+	 Triết gia có thể từ bỏ nếu chiếc đũa đó bẩn.
+	
+Bài 1.3: Tìm hiểu về ThreadPool.
+	- ThreadPool là nơi chứa các Thread được giới hạn về số lượng để chạy bên trong ứng dụng tại một thời điểm.
+	- Bên trong ThreadPool, các nhiệm vụ sẽ được chèn vào BlookingQueue. Các Thread không phải thực hiện nhiệm vụ nào sẽ lần lượt lấy ra các nhiệm vụ đó ra
+	và thực thi.
+	- Các thuộc tính cơ bản của ThreadPool: 
+	 + corePoolSize: số lượng Thread cơ bản của ThreadPool.
+	 + maximumPoolSize: số lượng Thread tối đa mà ThreadPool có thể tạo ra để thực hiện các nhiệm vụ.
+	 + keepAliveTime: thời gian một Thread rảnh rỗi chờ nhiệm vụ. Khi hết thời gian mà Thread chưa được nhận nhiệm vụ nó sẽ bị hủy.
+	 + unit: đơn vị thời gian của keepAliveTime.
+	 + queue: là hàng đợi dùng để chứa các nhiệm vụ mà các Thread sẽ lấy chúng ra và thực thi lần lượt, ở đây tôi dùng ArrayBlockingQueue.
+	 
+	- Điểm hạn chế:
+	 + Vẫn có thể xảy ra hiện tượng deadlock.
+	 + Rò rỉ luồng, khi có 1 một luồng bị bắt ngoại lệ và không được xử lý thì luồng đó sẽ bị xóa khỏi ThreadPool, tình trạng ThreadPool trống không còn 1
+	 luồng nào có thể xảy ra khi đó các task sẽ không được thực hiện nữa.
+	 + Kích thước ThreadPool lớn sẽ gây ra việc chuyển đổi tài nguyên giữa các luồng, gây ra lãng phí tài nguyên.

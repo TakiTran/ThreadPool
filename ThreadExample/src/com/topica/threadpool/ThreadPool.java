@@ -7,7 +7,7 @@ public class ThreadPool {
 	static BlockingQueue<Runnable> queue;
 	static int corePollSize;
 	static int maximumPollSize;
-	static List<Thread> workThreads = new ArrayList<Thread>(); 
+	static List<Thread> workThreads = new ArrayList<Thread>();
 
 	public ThreadPool(int queueSize, int corePollSize, int maximumPollSize) {
 		ThreadPool.maximumPollSize = maximumPollSize;
@@ -26,17 +26,15 @@ public class ThreadPool {
 	public void submitTask(Runnable task) throws InterruptedException {
 		queue.enqueue(task);
 	}
-	
+
+	@SuppressWarnings("deprecation")
 	public static void shutdown() {
-		System.out.println("==================> size: " + queue.getSize());
-		if(queue.getSize() == 0) {
-			for( Thread thread : workThreads) {
-				thread.interrupt();
-				System.out.println(thread.getName() + "has shutdown.");
-			}
+		for (Thread thread : workThreads) {
+			thread.stop();
+			System.out.println(thread.getName() + " has shutdown.");
 		}
 	}
-	
+
 	public static int incrementThreadNumber() {
 		return workThreads.size() + 1;
 	}
