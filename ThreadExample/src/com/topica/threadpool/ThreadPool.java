@@ -5,16 +5,16 @@ import java.util.List;
 
 public class ThreadPool {
 	static BlockingQueue<Runnable> queue;
-	static int corePollSize;
-	static int maximumPollSize;
+	static int corePoolSize;
+	static int maximumPoolSize;
 	static List<Thread> workThreads = new ArrayList<Thread>();
 
-	public ThreadPool(int queueSize, int corePollSize, int maximumPollSize) {
-		ThreadPool.maximumPollSize = maximumPollSize;
+	public ThreadPool(int queueSize, int corePoolSize, int maximumPoolSize) {
+		ThreadPool.maximumPoolSize = maximumPoolSize;
 		queue = new BlockingQueue<>(queueSize);
 		String threadName = null;
 		TaskExecutor task = null;
-		for (int count = 0; count < corePollSize; count++) {
+		for (int count = 0; count < corePoolSize; count++) {
 			threadName = "Thread-" + count;
 			task = new TaskExecutor(queue);
 			Thread thread = new Thread(task, threadName);

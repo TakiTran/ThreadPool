@@ -14,7 +14,7 @@ public class BlockingQueue<Type> {
 
 	public synchronized void enqueue(Type task) throws InterruptedException {
 		while (this.queue.size() == this.MAX_TASK_IN_QUEUE) {
-			if(ThreadPool.workThreads.size() < ThreadPool.maximumPollSize) {
+			if(ThreadPool.workThreads.size() < ThreadPool.maximumPoolSize) {
     			System.out.println("===========> Thread " + ThreadPool.incrementThreadNumber() + " created.");
     			String threadName = "Thread-" + ThreadPool.incrementThreadNumber();
     			TaskExecutor temp = new TaskExecutor(ThreadPool.queue);
