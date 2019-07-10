@@ -6,7 +6,7 @@ public class TestThreadPool {
 		ThreadPool threadPool = new ThreadPool(50, 10, 15);
 		for (int taskNumber = 1; taskNumber <= 100; taskNumber++) {
 			TestTask task = new TestTask(taskNumber);
-			threadPool.submitTask(task);
+			threadPool.submit(task);
 		}
 		ThreadPool.shutdown();
 	}

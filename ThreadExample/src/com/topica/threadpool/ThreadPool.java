@@ -23,7 +23,7 @@ public class ThreadPool {
 		}
 	}
 
-	public void submitTask(Runnable task) throws InterruptedException {
+	public void submit(Runnable task) throws InterruptedException {
 		queue.enqueue(task);
 	}
 

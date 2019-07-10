@@ -1,23 +1,25 @@
 package com.topica.threadpool2;
 
-public class Task implements Runnable{
-	private String mName;
+public class Task implements Runnable {
+	private int number;
 
-	public Task(String name) {
-		this.mName = name;
+	public int getNumber() {
+		return number;
 	}
 
-	public String getName() {
-		return mName;
+	public Task(int number) {
+		this.number = number;
 	}
 
 	@Override
 	public void run() {
+		System.out.println("Task: " + number + " executing.");
 		try {
-			System.out.println("Executing : " + mName);
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Finish task " + number);
 	}
+
 }
