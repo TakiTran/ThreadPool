@@ -1,7 +1,0 @@
-#ThreadPoll
-
-##ReSize: Xảy ra khi các thread đang hoạt động và đồng thời queue đã đầy, các thread được tạo mới cho đến khi bằng maxSize.
-
-##KillThread: Khi queue rỗng và có thread đang ở trạng thái không hoạt động (isActive = false), thread đó ngay lập tức bị đưa ra khỏi WorkThread và interrupt. Các thread bị xóa cho đến khi số lượng thread trong ThreadPool bằng đúng corePoolSize.
-
-##Shutdown: Khi thực hiện hêt các nhiệm vụ trong queue, trong threadpool vẫn còn số lượng thread (= corePoolSize) vẫn đang hoạt động mà không thực hiện bất kì một task nào. Shutdown() giúp kill số lượng thread đó khi toàn bộ số thread trong WorkThread đểu có isActive = false và queueSize = 0.
