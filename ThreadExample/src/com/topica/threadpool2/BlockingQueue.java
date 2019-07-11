@@ -20,7 +20,7 @@ public class BlockingQueue<Type> {
 				System.out.println("===========> Thread-" + ThreadPoolImpl.incrementThreadNumber() + " created.");
 				String threadName = "Thread-" + ThreadPoolImpl.incrementThreadNumber();
 				TaskExecutor taskExecutor = new TaskExecutor(ThreadPoolImpl.queue);
-				Thread thread = new Thread(taskExecutor, threadName);
+				WorkThread thread = new WorkThread(taskExecutor, threadName);
 				ThreadPoolImpl.workThreads.add(thread);
 				ThreadPoolImpl.workThreads.get(ThreadPoolImpl.workThreads.size() - 1).start();
 			}

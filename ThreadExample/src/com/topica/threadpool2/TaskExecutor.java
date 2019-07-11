@@ -17,27 +17,31 @@ public class TaskExecutor implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				String name = Thread.currentThread().getName();
+				WorkThread workThread = (WorkThread) WorkThread.currentThread();
 				Runnable task = queue.dequeue();
-				System.out.println("Task " + ((Task) task).getNumber() + " started by " + name);
+				workThread.setActive(true);
+				System.out.println("Task " + ((Task) task).getNumber() + " started by " + workThread.getName()
+						+ ". Active: " + workThread.isActive);
 				task.run();
-				System.out.println("Task " + ((Task) task).getNumber() + " finished by " + name);
+				workThread.setActive(false);
+				System.out.println("Task " + ((Task) task).getNumber() + " finished by " + workThread.getName()
+						+ ". Active: " + workThread.isActive);
 				System.out.println("QUEUE: " + queue.getSize());
 				System.out.println("SIZE: " + ThreadPoolImpl.workThreads.size());
 				if (queue.getSize() == 0 && ThreadPoolImpl.workThreads.size() > ThreadPoolImpl.corePoolSize) {
-					Iterator<Thread> iterator = ThreadPoolImpl.workThreads.iterator();
+					Iterator<WorkThread> iterator = ThreadPoolImpl.workThreads.iterator();
 					while (iterator.hasNext()) {
-						if (iterator.next().isAlive()) {
+						if (iterator.next().isAlive() && (!iterator.next().isActive)) {
 							iterator.remove();
 							System.out.println("===========> SHUTDOWN: " + iterator.next().getName());
 							break;
 						}
-
 					}
+					break;
 				}
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+
 		}
 
 	}

@@ -11,7 +11,7 @@ public class ThreadPoolImpl implements ThreadPool {
 	static BlockingQueue<Runnable> queue;
 	static int corePoolSize;
 	static int maximumPoolSize;
-	static List<Thread> workThreads = new ArrayList<Thread>();
+	static List<WorkThread> workThreads = new ArrayList<WorkThread>();
 
 	public ThreadPoolImpl(int corePoolSize, int maximumPoolSize, int queueSize) {
 		ThreadPoolImpl.maximumPoolSize = maximumPoolSize;
@@ -22,7 +22,7 @@ public class ThreadPoolImpl implements ThreadPool {
 		for (int i = 0; i < corePoolSize; i++) {
 			threadName = "Thread-" + i;
 			taskExecutor = new TaskExecutor(queue);
-			Thread thread = new Thread(taskExecutor, threadName);
+			WorkThread thread = new WorkThread(taskExecutor, threadName);
 			workThreads.add(thread);
 			workThreads.get(i).start();
 			System.out.println("===========> " + workThreads.get(i).getName() + " created.");
