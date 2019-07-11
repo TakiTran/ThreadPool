@@ -1,6 +1,7 @@
 package com.topica.threadpool2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.topica.threadpool2.BlockingQueue;
@@ -42,18 +43,50 @@ public class ThreadPoolImpl implements ThreadPool {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void shutdown() {
-		for (Thread thread : workThreads) {
-			thread.stop();
-			System.out.println(thread.getName() + " has shutdown.");
+		while (workThreads.size() > 0) {
+			System.out.println("============> CheckSize: " + workThreads.size());
+			if (workThreads.size() == corePoolSize) {
+				boolean checkRunning = false;
+				for (WorkThread thread : workThreads) {
+					if (thread.isActive) {
+						checkRunning = true;
+						break;
+					}
+				}
+				System.out.println("============> CheckActive: " + checkRunning);
+				if (!checkRunning) {
+					System.out.println("======== START SHUTDOWN =======");
+					Iterator<WorkThread> iterator = workThreads.iterator();
+					while (iterator.hasNext()) {
+						WorkThread workThread = iterator.next();
+						if (queue.getSize() == 0) {
+							System.out.println("============> SHUTDOWN: " + workThread.getName());
+							iterator.remove();
+							workThread.interrupt();
+						}
+					}
+					System.out.println("=========> THREAD POll SIZE: " + workThreads.size());
+				}
+			}
 		}
 	}
 
 	@Override
 	public int getSize() {
 		return workThreads.size();
+	}
+
+	@Override
+	public int getCorePoolSize() {
+		return corePoolSize;
+	}
+
+	@Override
+	public int getMaxPoolSize() {
+		// TODO Auto-generated method stub
+		return maximumPoolSize;
 	}
 
 }

@@ -28,17 +28,22 @@ public class TaskExecutor implements Runnable {
 						+ ". Active: " + workThread.isActive);
 				System.out.println("QUEUE: " + queue.getSize());
 				System.out.println("SIZE: " + ThreadPoolImpl.workThreads.size());
-				if (queue.getSize() == 0 && ThreadPoolImpl.workThreads.size() > ThreadPoolImpl.corePoolSize) {
-					Iterator<WorkThread> iterator = ThreadPoolImpl.workThreads.iterator();
-					while (iterator.hasNext()) {
-						if (iterator.next().isAlive() && (!iterator.next().isActive)) {
-							iterator.remove();
-							System.out.println("===========> SHUTDOWN: " + iterator.next().getName());
-							break;
+				synchronized (ThreadPoolImpl.workThreads) {
+					if (queue.getSize() == 0 && ThreadPoolImpl.workThreads.size() > ThreadPoolImpl.corePoolSize) {
+						Iterator<WorkThread> iterator = ThreadPoolImpl.workThreads.iterator();
+						while (iterator.hasNext()) {
+							WorkThread workThread2 = iterator.next();
+							if (workThread2.isAlive() && (!workThread2.isActive)) {
+								System.out.println("===========> KILL: " + workThread2.getName());
+								workThread2.interrupt();
+								iterator.remove();
+								break;
+							}
 						}
+						break;
 					}
-					break;
 				}
+
 			}
 		} catch (InterruptedException e) {
 
